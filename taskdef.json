@@ -10,7 +10,7 @@
     "containerDefinitions": [
         {
             "name": "nginx-container",
-            "image": "975050220365.dkr.ecr.ap-south-1.amazonaws.com/sekhar/ecscicd:t3",
+            "image": "IMAGE",
             "memory": 512,
             "cpu": 256,
             "portMappings": [

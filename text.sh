@@ -1,5 +1,5 @@
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 975050220365.dkr.ecr.us-east-1.amazonaws.com
-//docker run -d -p 8086:80 ecs-deploy 
+docker run -d -p 8086:80 ecs-deploy
 docker build -t ecs-deploy:latest ./
 docker tag ecs-deploy:t3 975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:t3
 docker push 975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:t3
@@ -16,13 +16,13 @@ aws ecs list-task-definitions \
   --sort DESC
 
 aws ecs create-service \
-    --cluster DevCluster \
-    --service-name nginx-ecs \
-    --deployment-controller '{"type": "ECS"}' \
-    --task-definition ecs-nginx-task \
-    --desired-count 2 \
-    --launch-type FARGATE \
-    --network-configuration '{
+  --cluster DevCluster \
+  --service-name nginx-ecs \
+  --deployment-controller '{"type": "ECS"}' \
+  --task-definition ecs-nginx-task \
+  --desired-count 2 \
+  --launch-type FARGATE \
+  --network-configuration '{
       "awsvpcConfiguration": {
         "subnets": ["subnet-019c05df8a5be4917", "subnet-07c0e11e713419f1f", "subnet-0db83d48bdae1a99c"],
         "securityGroups": ["sg-005ca3ee4d25e9806"],
@@ -30,9 +30,7 @@ aws ecs create-service \
       }
     }'
 
-
-
 aws ecs update-service \
-    --cluster DevCluster \
-    --service nginx-ecs \
-    --deployment-controller type=CODE_DEPLOY
+  --cluster DevCluster \
+  --service nginx-ecs \
+  --deployment-controller type=CODE_DEPLOY
