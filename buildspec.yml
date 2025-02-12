@@ -5,9 +5,9 @@ phases:
     commands:
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 975050220365.dkr.ecr.us-east-1.amazonaws.com
-      - IMAGE_TAG=t$(date +%s) # Sequential image tag based on timestamp
-      - IMAGE_URI=975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:$IMAGE_TAG
-      - echo "Generated Image tag: $IMAGE_URI"
+      - export IMAGE_TAG=$(date +%Y%m%d%H%M%S) # ✅ Use 'export' to define the variable properly
+      - export IMAGE_URI=975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:$IMAGE_TAG
+      - echo "Generated Image URI: $IMAGE_URI"
 
   build:
     commands:
@@ -19,10 +19,9 @@ phases:
     commands:
       - echo "Pushing Docker image to ECR..."
       - docker push $IMAGE_URI
-      - echo "Replacing placeholder in taskdef.json..."
-      - sed -i "s|<IMAGE>|$IMAGE_URI|g" taskdef.json # ✅ Replace IMAGE placeholder
-      - echo "Uploading artifacts..."
-      - cat taskdef.json # ✅ Debugging: Verify taskdef.json update
+      - echo "Updating task definition..."
+      - sed -i "s|<IMAGE>|$IMAGE_URI|g" taskdef.json
+      - cat taskdef.json # Debugging: Verify the update
 
 artifacts:
   files:
