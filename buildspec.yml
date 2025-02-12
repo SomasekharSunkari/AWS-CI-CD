@@ -26,14 +26,14 @@ phases:
       - echo "Pushing Docker image to ECR..."
       - docker push 975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:$IMAGE_TAG
       - echo "Updating ECS task definition..."
-      # - sed -i "s|<IMAGE>|975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:$IMAGE_TAG|g" taskdef.json
-      # - aws ecs register-task-definition --cli-input-json file://taskdef.json
-      # - echo "Updating ECS service..."
+      - sed -i "s|<IMAGE>|975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:$IMAGE_TAG|g" taskdef.json
+      - aws ecs register-task-definition --cli-input-json file://taskdef.json
+      - echo "Updating ECS service..."
       # - aws ecs update-service --cluster DevCluster --service nginx-ecs --task-definition ecs-nginx-task:$IMAGE_TAG
 
 artifacts:
   files:
-    - "**/*"
+    - taskdef.json
   name: build-$(date +%Y-%m-%d)
   discard-paths: no
 
