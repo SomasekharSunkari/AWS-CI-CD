@@ -1,43 +1,32 @@
 version: 0.2
 
 phases:
-  install:
-    commands:
-      - echo "Installing Dependencies"
-      - echo "I am Sekhar, AWS DEVOPS"
-
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 975050220365.dkr.ecr.us-east-1.amazonaws.com
-      - IMAGE_TAG=t$(date +%s)
-      - echo "Generated Image tag is $IMAGE_TAG"
+      - IMAGE_TAG=$(date +%Y%m%d%H%M%S)
+      - IMAGE_URI=975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:$IMAGE_TAG
+      - echo "Generated Image tag: $IMAGE_URI"
 
   build:
     commands:
-      - echo "Building Docker image..."
-      # - docker build --cache-from 975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:latest -t ecs-deploy:$IMAGE_TAG .
+      - echo "Building and tagging Docker image..."
       - docker build -t ecs-deploy:$IMAGE_TAG .
-      - echo "Tagging Image..."
-      - docker tag ecs-deploy:$IMAGE_TAG 975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:$IMAGE_TAG
+      - docker tag ecs-deploy:$IMAGE_TAG $IMAGE_URI
 
   post_build:
     commands:
       - echo "Pushing Docker image to ECR..."
-      - docker push 975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:$IMAGE_TAG
-      - echo "Updating ECS task definition..."
-      # - sed -i "s|<IMAGE>|975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:$IMAGE_TAG|g" taskdef.json
-      # - aws ecs register-task-definition --cli-input-json file://taskdef.json
-      # - echo "Updating ECS service..."
-      # - aws ecs update-service --cluster DevCluster --service nginx-ecs --task-definition ecs-nginx-task:$IMAGE_TAG
+      - docker push $IMAGE_URI
+      - echo "Replacing placeholder in taskdef.json..."
+      - sed -i "s|<IMAGE>|$IMAGE_URI|g" taskdef.json
+      - echo "Uploading artifacts..."
+      - cat taskdef.json
 
 artifacts:
   files:
-    - taskdef.json
-    - appspec.yaml
+    - "appspec.yaml"
+    - "taskdef.json"
   name: BuildArtifact
-  # discard-paths: no
-
-cache:
-  paths:
-    - "/root/.docker"
+  discard-paths: no
