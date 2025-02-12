@@ -14,3 +14,25 @@ aws ecs list-tasks --cluster DevCluster
 aws ecs list-task-definitions \
   --family-prefix ecs-nginx-task \
   --sort DESC
+
+aws ecs create-service \
+    --cluster DevCluster \
+    --service-name nginx-ecs \
+    --deployment-controller '{"type": "ECS"}' \
+    --task-definition ecs-nginx-task \
+    --desired-count 2 \
+    --launch-type FARGATE \
+    --network-configuration '{
+      "awsvpcConfiguration": {
+        "subnets": ["subnet-019c05df8a5be4917", "subnet-07c0e11e713419f1f", "subnet-0db83d48bdae1a99c"],
+        "securityGroups": ["sg-005ca3ee4d25e9806"],
+        "assignPublicIp": "ENABLED"
+      }
+    }'
+
+
+
+aws ecs update-service \
+    --cluster DevCluster \
+    --service nginx-ecs \
+    --deployment-controller type=CODE_DEPLOY
