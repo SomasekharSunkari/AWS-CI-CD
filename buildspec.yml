@@ -34,8 +34,9 @@ phases:
 artifacts:
   files:
     - taskdef.json
-  name: build-$(date +%Y-%m-%d)
-  discard-paths: no
+    - appspec.yaml
+  name: BuildArtifact
+  # discard-paths: no
 
 cache:
   paths:
