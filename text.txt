@@ -1,5 +1,5 @@
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 975050220365.dkr.ecr.us-east-1.amazonaws.com
-docker run -d -p 8086:80 ecs-deploy 
+//docker run -d -p 8086:80 ecs-deploy 
 docker build -t ecs-deploy:latest ./
 docker tag ecs-deploy:t3 975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:t3
 docker push 975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:t3
@@ -10,7 +10,7 @@ aws ecs update-service --cluster DevCluster \
   --task-definition ecs-nginx-task:8
 aws ecs describe-services --cluster DevCluster --services nginx-ecs
 
-
+aws ecs list-tasks --cluster DevCluster
 aws ecs list-task-definitions \
   --family-prefix ecs-nginx-task \
   --sort DESC
