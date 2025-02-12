@@ -8,7 +8,7 @@ phases:
       - echo "Installing Dependencies"
       - echo "I am sekha AWS DEVOPS"
 
-  pre-build:
+  pre_build: # ✅ Change from "pre-build" to "pre_build"
     commands:
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 975050220365.dkr.ecr.us-east-1.amazonaws.com
       - IMAGE_TAG=t$(date +%s)
@@ -20,6 +20,7 @@ phases:
       - docker build --cache-from 975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:latest -t ecs-deploy:$IMAGE_TAG .
       - echo "Tagging Images"
       - docker tag ecs-deploy:$IMAGE_TAG 975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:$IMAGE_TAG
+
   post_build:
     commands:
       - echo "Pushing Docker image to ECR..."
@@ -29,6 +30,7 @@ phases:
       - aws ecs register-task-definition --cli-input-json file://taskdef.json
       - echo "Updating ECS service..."
       - aws ecs update-service --cluster DevCluster --service nginx-ecs --task-definition ecs-nginx-task:$IMAGE_TAG
+
 artifacts:
   files:
     - "**/*"
