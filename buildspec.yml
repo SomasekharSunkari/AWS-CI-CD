@@ -16,7 +16,8 @@ phases:
   build:
     commands:
       - echo "Building Docker image..."
-      - docker build --cache-from 975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:latest -t ecs-deploy:$IMAGE_TAG .
+      # - docker build --cache-from 975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:latest -t ecs-deploy:$IMAGE_TAG .
+      - docker build -t ecs-deploy:$IMAGE_TAG .
       - echo "Tagging Image..."
       - docker tag ecs-deploy:$IMAGE_TAG 975050220365.dkr.ecr.us-east-1.amazonaws.com/sekhar/ecscicd:$IMAGE_TAG
 
