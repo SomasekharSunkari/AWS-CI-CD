@@ -4,7 +4,7 @@ FROM nginx:alpine
 # Remove default NGINX config
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Copy custom NGINX config
+# Copy custom NGINX config 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy HTML files
