@@ -10,7 +10,7 @@
     "containerDefinitions": [
         {
             "name": "nginx-container",
-            "image": "IMAGE",
+            "image": "nginx",
             "memory": 512,
             "cpu": 256,
             "portMappings": [
